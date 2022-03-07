@@ -2,7 +2,7 @@ from alembic import context
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from app.core import settings
-from app.helper.functions.utilities import combine_metadata
+from app.helpers.functions.utilities import combine_metadata
 from app.user.models import user_model
 
 
