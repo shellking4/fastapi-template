@@ -2,17 +2,14 @@ from alembic import context
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from app.core import settings
-from database.base import Base
+from app.helper.functions.utilities import combine_metadata
+from app.user.models import user_model
 
 
 config = context.config
-config.set_main_option(
-    "sqlalchemy_url", 
-    settings.SQLALCHEMY_DATABASE_URI
-)
 fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = combine_metadata(user_model.BaseModel.metadata, )
 
 def run_migrations_offline():
     url = settings.SQLALCHEMY_DATABASE_URI
@@ -20,7 +17,6 @@ def run_migrations_offline():
                       dialect_opts={"paramstyle": "named"}, compare_type=True)
     with context.begin_transaction():
         context.run_migrations()
-
 
 def run_migrations_online():
     configuration = config.get_section(config.config_ini_section)

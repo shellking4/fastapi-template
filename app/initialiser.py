@@ -1,5 +1,5 @@
-from ..database.initialise import initialise
-from ..database.session import SessionLocal
+from app.core.initialise import initialise
+from app.core.session import SessionLocal
 
 def init() -> None:
     db = SessionLocal()
