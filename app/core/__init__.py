@@ -1,2 +1,2 @@
 from .config import settings
-from .core_service import CoreService
+from .base_service import BaseService

@@ -9,7 +9,7 @@ ModelType = TypeVar("ModelType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
-class CoreService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     
     def __init__(self, model: Type[ModelType]):
         self.model = model

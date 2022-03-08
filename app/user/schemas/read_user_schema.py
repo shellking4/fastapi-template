@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from .user_base_schema import UserBaseSchema
 
-
-class ReadUserSchemas(BaseModel):
-    email: EmailStr
-    password: str
+class ReadUserSchema(UserBaseSchema):
+    
+    class Config:
+        orm_mode = True
