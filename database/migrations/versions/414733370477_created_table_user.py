@@ -1,8 +1,8 @@
-"""create users table
+"""created table user
 
-Revision ID: b838be56106f
+Revision ID: 414733370477
 Revises: 
-Create Date: 2022-03-07 17:20:02.833947
+Create Date: 2022-03-08 11:52:32.842853
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b838be56106f'
+revision = '414733370477'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
+    sa.Column('roles', sa.ARRAY(sa.Enum('GHOST', 'ADMIN', 'MANAGER', 'USER', name='userrole', native_enum=False)), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )

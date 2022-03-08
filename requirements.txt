@@ -19,9 +19,13 @@ itsdangerous==2.1.0
 Jinja2==3.0.3
 Mako==1.1.6
 MarkupSafe==2.1.0
+mega.py==1.0.8
 orjson==3.6.7
 passlib==1.7.4
+pathlib==1.0.1
+psycopg2==2.9.3
 pyasn1==0.4.8
+pycryptodome==3.14.1
 pydantic==1.9.0
 python-dotenv==0.19.2
 python-jose==3.3.0
@@ -32,7 +36,9 @@ rsa==4.8
 six==1.16.0
 sniffio==1.2.0
 SQLAlchemy==1.4.32
+SQLAlchemy-Utils==0.38.2
 starlette==0.17.1
+tenacity==5.1.5
 typing-extensions==4.1.1
 ujson==4.3.0
 urllib3==1.26.8
