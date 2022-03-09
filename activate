@@ -1,6 +1,5 @@
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
-
 deactivate () {
     # reset old environment variables
     if [ -n "${_OLD_VIRTUAL_PATH:-}" ] ; then
@@ -77,3 +76,4 @@ if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
 fi
 alias "fastapi:migration:generate"="alembic revision --autogenerate -m"
 alias "fastapi:migration:run"="alembic upgrade head"
+alias "fastapi:run"="python -m app.main"

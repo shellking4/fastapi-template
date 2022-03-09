@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI"
     JWT_SECRET_KEY: str = secrets.token_urlsafe(255)
     JWT_TOKEN_EXPIRE_MINUTES: int
-    TOKEN_GENERATION_ALGORITHM: str
+    JWT_TOKEN_GENERATION_ALGORITHM: str
     DATABASE_HOST: str
     DATABASE_PORT: int
     DATABASE_MANAGEMENT_SYSTEM: str
