@@ -17,3 +17,9 @@ def hash_password(password: str):
 def verify_hash(plain_password: str, hash: str):
     return crypto_context.verify(plain_password, hash)
 
+def is_slice_in_list(slice, list):
+    len_slice = len(slice) 
+    return any(slice == list[i : len_slice + i] for i in range(len(list) - len_slice + 1))
+
+def is_any_slice_element_in_list(slice, list):
+    return any(i in list for i in slice)

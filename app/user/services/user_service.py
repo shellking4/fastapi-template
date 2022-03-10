@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from app.core.base_service import BaseService
-from app.helpers.functions.utilities import hash_password
+from app.helpers.utilities.functions import hash_password
 from app.user.models.user_model import User
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
