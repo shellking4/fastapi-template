@@ -4,6 +4,7 @@ from sqlalchemy import engine_from_config, pool
 from app.core import settings
 from app.helpers.utilities.functions import combine_metadata
 from app.user.models import user_model
+from app.user.models import lead_model
 
 
 config = context.config

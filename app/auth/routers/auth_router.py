@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from app.helpers.utilities.functions import verify_hash
 from app.user.schemas.create_user_schema import CreateUserSchema
 from app.user.schemas.read_user_schema import ReadUserSchema
-from auth.schemas.signin_response_schema import SigninResponseSchema
-from user.services.user_service import user_service
-from auth.services.auth_service import auth_service
+from app.auth.schemas.signin_response_schema import SigninResponseSchema
+from app.user.services.user_service import user_service
+from app.auth.services.auth_service import auth_service
 from app.core import database
 
 router = APIRouter(prefix="/auth")

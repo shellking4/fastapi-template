@@ -2,7 +2,7 @@ from xmlrpc.client import boolean
 from fastapi import HTTPException, Depends
 from typing import List
 from app.helpers.utilities.functions import is_any_slice_element_in_list, is_slice_in_list
-from auth.services.auth_service import auth_service
+from app.auth.services.auth_service import auth_service
 from app.auth.schemas.token_data_schema import TokenDataSchema
 
 class RoleChecker:

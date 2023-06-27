@@ -19,3 +19,5 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 settings = Settings()
+
+settings.SQLALCHEMY_DATABASE_URI = f"{settings.DATABASE_MANAGEMENT_SYSTEM}://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOST}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}"
