@@ -1,5 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, BackgroundTasks, Depends
 from app.auth.schemas.token_data_schema import TokenDataSchema
 from typing import Any
 from sqlalchemy.orm import Session
