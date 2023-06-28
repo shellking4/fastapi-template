@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from pymysql import IntegrityError
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from app.auth.schemas.token_data_schema import TokenDataSchema
 from typing import Any
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.auth.services.auth_service import auth_service
 from app.core import database
 import requests
@@ -18,31 +19,14 @@ def get_users(*, db: Session = Depends(database.get_db), auth_user = Depends(aut
     return auth_user
 
 @router.get("/fetch-leads", response_model=Any, status_code=200)
-def fetch_leads(*, db: Session = Depends(database.get_db)):
-    url = "https://suitecrmdemo.dtbc.eu/service/v4/rest.php"
-    headers = { "Content-Type": "application/json" }
-    
-    auth_rest_data = { 
-        "user_auth" : { 
-            "user_name": "Demo", 
-            "password": "f0258b6685684c113bad94d91b8fa02a"
-        }
-    }
+def fetch_leads(*, db: Session = Depends(database.get_db), background_tasks: BackgroundTasks):
+    background_tasks.add_task(batch_fetch_leads, db)
+    return { "message": "job added" }
 
-    querystring = {"method":"login","input_type":"JSON","response_type":"JSON","rest_data": json.dumps(auth_rest_data)}
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    sessionId = json.loads(response.content)["id"]
-
-    offset = 0
-    keep_going = True
-    while keep_going:
-        fetch_response = fetch_leads_data(db, sessionId, offset)
-        total_count = fetch_response["total_count"]
-        offset = fetch_response["next_offset"]
-        keep_going = (offset < total_count)
-        print(keep_going)
-    return 1
-    
+@router.get("/get-leads", response_model=Any, status_code=200)
+def get_leads(*, db: Session = Depends(database.get_db), background_tasks: BackgroundTasks):
+    leads = db.query(Lead).all()
+    return leads
 
 
 def fetch_leads_data(db: Session, suite_crm_session_id, offset):
@@ -71,12 +55,31 @@ def fetch_leads_data(db: Session, suite_crm_session_id, offset):
         try:
             db.commit()
         except IntegrityError as error:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, 
-                detail=f'An error occured during the insert'
-            )
+            db.rollback()
+            continue
     return {
         "next_offset": next_offset, 
         "total_count": int(total_count)
     }
     
+def batch_fetch_leads(db: Session):
+    url = "https://suitecrmdemo.dtbc.eu/service/v4/rest.php"
+    headers = { "Content-Type": "application/json" }
+    
+    auth_rest_data = { 
+        "user_auth" : { 
+            "user_name": "Demo", 
+            "password": "f0258b6685684c113bad94d91b8fa02a"
+        }
+    }
+    querystring = {"method":"login","input_type":"JSON","response_type":"JSON","rest_data": json.dumps(auth_rest_data)}
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    sessionId = json.loads(response.content)["id"]
+    offset = 0
+    keep_going = True
+    while keep_going:
+        fetch_response = fetch_leads_data(db, sessionId, offset)
+        total_count = fetch_response["total_count"]
+        offset = fetch_response["next_offset"]
+        keep_going = (offset < total_count)
+    return 1
