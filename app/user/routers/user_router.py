@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.auth.services.auth_service import auth_service
 from app.core import database
-import requests
+import httpx
 import json
 
 from app.user.models.lead_model import Lead
@@ -13,14 +13,17 @@ from app.user.models.lead_model import Lead
 
 router = APIRouter(prefix="/users")
 
+
 @router.get("", response_model=TokenDataSchema, status_code=200)
 def get_users(*, db: Session = Depends(database.get_db), auth_user = Depends(auth_service.get_current_user)):
     return auth_user
+
 
 @router.get("/fetch-leads", response_model=Any, status_code=200)
 def fetch_leads(*, db: Session = Depends(database.get_db), background_tasks: BackgroundTasks):
     background_tasks.add_task(batch_fetch_leads, db)
     return { "message": "job added" }
+
 
 @router.get("/get-leads", response_model=Any, status_code=200)
 def get_leads(*, db: Session = Depends(database.get_db), background_tasks: BackgroundTasks):
@@ -39,7 +42,7 @@ def fetch_leads_data(db: Session, suite_crm_session_id, offset):
         "offset": offset
     }
     leads_query_string = {"method":"get_entry_list","input_type":"JSON","response_type":"JSON","rest_data": json.dumps(leads_rest_data)}
-    query_response = json.loads(requests.request("GET", url, headers=headers, params=leads_query_string).content)
+    query_response = httpx.get(url, headers=headers, params=leads_query_string).json()
     next_offset = query_response["next_offset"]
     total_count = query_response["total_count"]
     leads_data = query_response["entry_list"]
@@ -72,8 +75,8 @@ def batch_fetch_leads(db: Session):
         }
     }
     querystring = {"method":"login","input_type":"JSON","response_type":"JSON","rest_data": json.dumps(auth_rest_data)}
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    sessionId = json.loads(response.content)["id"]
+    response = httpx.get(url, headers=headers, params=querystring).json()
+    sessionId = response["id"]
     offset = 0
     keep_going = True
     while keep_going:
