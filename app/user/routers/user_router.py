@@ -5,8 +5,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.auth.services.auth_service import auth_service
 from app.core import database
+from sqlalchemy import desc, asc
 import httpx
 import json
+from app.user.models.btc_usd_price_price_model import BtcUsdPrice
 
 from app.user.models.lead_model import Lead
 
@@ -26,9 +28,28 @@ def fetch_leads(*, db: Session = Depends(database.get_db), background_tasks: Bac
 
 
 @router.get("/get-leads", response_model=Any, status_code=200)
-def get_leads(*, db: Session = Depends(database.get_db), background_tasks: BackgroundTasks):
-    leads = db.query(Lead).all()
+def get_leads(*, db: Session = Depends(database.get_db)):
+    leads = db.query(Lead).order_by(desc(Lead.created_at)).all()
     return leads
+
+
+@router.get("/fetch-btc-usd-price", response_model=Any, status_code=200)
+def fetch_btc_usd_price(*, db: Session = Depends(database.get_db)):
+    binance_api_url = "https://api.binance.com/api/v3/avgPrice?symbol=BTCUSDT"
+    price_data = httpx.get(binance_api_url).json()
+    btc_price_model = BtcUsdPrice(value=price_data["price"])
+    db.add(btc_price_model)
+    try:
+        db.commit()
+        db.refresh(btc_price_model)
+    except IntegrityError:
+        db.rollback()
+    return btc_price_model
+
+@router.get("/get-btc-usd-price", response_model=Any, status_code=200)
+def get_btc_usd_price(*, db: Session = Depends(database.get_db)):
+    btc_usd_prices = db.query(BtcUsdPrice).order_by(desc(BtcUsdPrice.created_at)).all()
+    return btc_usd_prices
 
 
 def fetch_leads_data(db: Session, suite_crm_session_id, offset):

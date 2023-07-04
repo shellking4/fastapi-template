@@ -5,6 +5,7 @@ from app.core import settings
 from app.helpers.utilities.functions import combine_metadata
 from app.user.models import user_model
 from app.user.models import lead_model
+from app.user.models import btc_usd_price_price_model
 
 
 config = context.config
