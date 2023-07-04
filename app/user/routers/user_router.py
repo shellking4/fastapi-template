@@ -52,6 +52,9 @@ def get_btc_usd_price(*, db: Session = Depends(database.get_db)):
     return btc_usd_prices
 
 
+
+
+
 def fetch_leads_data(db: Session, suite_crm_session_id, offset):
     url = "https://suitecrmdemo.dtbc.eu/service/v4/rest.php"
     headers = { "Content-Type": "application/json" }
@@ -85,6 +88,7 @@ def fetch_leads_data(db: Session, suite_crm_session_id, offset):
         "total_count": int(total_count)
     }
     
+
 def batch_fetch_leads(db: Session):
     url = "https://suitecrmdemo.dtbc.eu/service/v4/rest.php"
     headers = { "Content-Type": "application/json" }
