@@ -41,9 +41,9 @@ def fetch_btc_usd_price(*, db: Session = Depends(database.get_db)):
     db.add(btc_price_model)
     try:
         db.commit()
-        db.refresh(btc_price_model)
     except IntegrityError:
         db.rollback()
+    db.refresh(btc_price_model)
     return btc_price_model
 
 @router.get("/get-btc-usd-price", response_model=Any, status_code=200)
