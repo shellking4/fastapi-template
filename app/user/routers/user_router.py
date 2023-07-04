@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.auth.services.auth_service import auth_service
 from app.core import database
-from sqlalchemy import desc, asc
+from sqlalchemy import desc
 import httpx
 import json
 from app.user.models.btc_usd_price_price_model import BtcUsdPrice
